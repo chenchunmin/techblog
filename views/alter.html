@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/assets/index/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/index/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="/assets/index/css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <script src="/assets/layui/layui.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <form class="form-horizontal" id="register" action="lyear_forms_elements.html" method="post"
+                onsubmit="return false;">
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="example-hf-email">原密码</label>
+                    <div class="col-md-7">
+                        <input class="form-control" type="original" id="original" name="original"
+                            placeholder="请输入原密码..">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="example-hf-password">新密码</label>
+                    <div class="col-md-7">
+                        <input class="form-control" type="password" id="password" name="password"
+                            placeholder="请输入新密码..">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="example-hf-password">确认密码</label>
+                    <div class="col-md-7">
+                        <input class="form-control" type="password" id="repassword" name="repassword"
+                            placeholder="请确认密码..">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <button class="btn btn-primary" type="submit" id="alter">提交修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="/assets/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/index/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/index/js/main.min.js"></script>
+<script>
+    // 修改密码
+    $(function () {
+        $('#alter').on('click', () => {
+            let original = $('#original').val();
+            let password = $('#password').val();
+            let repassword = $('#repassword').val();
+            if ([original, password, repassword].includes('')) {
+                layer.msg('请输入修改信息')
+                return;
+            }
+            if (password !== repassword) {
+                layer.msg('确认密码不一致')
+                return;
+            }
+            $.ajax({
+                type: 'post',
+                data: $('#register').serialize(),
+                url: '/amend',
+                success: (res) => {
+                    if (res.code === 0) {
+                        layer.msg(res.message)
+                        top.location.href = '/';
+                    } else {
+                        layer.msg(res.message)
+                    }
+                }
+            })
+        })
+    })
+</script>
+
+</html>

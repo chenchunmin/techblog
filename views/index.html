@@ -1,120 +1,359 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>博客后台管理系统</title>
-    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>后台管理系统</title>
+  <link rel="icon" href="favicon.ico" type="image/ico">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="yinqi">
+  <link href="/assets/index/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/index/css/materialdesignicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/index/js/bootstrap-multitabs/multitabs.min.css">
+  <link href="/assets/index/css/style.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="layui-layout layui-layout-admin">
-        <div class="layui-header">
-            <div class="layui-logo layui-hide-xs layui-bg-black">小羊博客管理系统</div>
-            <!-- 头部区域（可配合layui 已有的水平导航） -->
-            <ul class="layui-nav layui-layout-left">
-                <!-- 移动端显示 -->
-                <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
-                    <i class="layui-icon layui-icon-spread-left"></i>
-                </li>
-
-                <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
-                <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
-                <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">nav groups</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="">menu 11</a></dd>
-                        <dd><a href="">menu 22</a></dd>
-                        <dd><a href="">menu 33</a></dd>
-                    </dl>
-                </li>
-            </ul>
-            <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-                    <a href="javascript:;">
-                        <img src="/assets/images/bc.jpg" class="layui-nav-img">
-                        小羊
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="">个人信息</a></dd>
-                        <dd><a href="">修改密码</a></dd>
-                        <dd><a href="./login.html">退出</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-                    <a href="javascript:;">
-                        <i class="layui-icon layui-icon-more-vertical"></i>
-                    </a>
-                </li>
-            </ul>
+  <div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+      <!--左侧导航-->
+      <aside class="lyear-layout-sidebar">
+        <!-- logo -->
+        <div id="logo" class="sidebar-header">
+          <a href=""><img src="assets/index/images/users/avatar.jpg"
+              style="border-radius: 50%;width: 48px; height: 48px;" title="LightYear" alt="LightYear" />
+            <span id="headline"></span>
+          </a>
         </div>
-
-        <div class="layui-side layui-bg-black">
-            <div class="layui-side-scroll">
-                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-                <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item"><a href="javascript:;">首页</a></li>
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="javascript:;">分类管理</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="">分类列表</a></dd>
-                            <dd><a href="javascript:;">文章列表</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">menu group </a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">list 1</a></dd>
-                            <dd><a href="javascript:;">list 2</a></dd>
-                        </dl>
-                    </li>
-
-                    <li class="layui-nav-item"><a href="">the links</a></li>
+        <div class="lyear-layout-sidebar-scroll">
+          <nav class="sidebar-main">
+            <ul class="nav nav-drawer">
+              <li class="nav-item active"> <a class="multitabs" href="/main"><i class="mdi mdi-home"></i>
+                  <span>首页</span></a> </li>
+              <li class="nav-item nav-item-has-subnav">
+                <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i> <span>分类管理</span></a>
+                <ul class="nav nav-subnav">
+                  <li> <a class="multitabs" href="/catelist">分类列表</a> </li>
+                  <li> <a class="multitabs" href="/articlelists">文章列表</a> </li>
+                  <li> <a class="multitabs" href="/addarticle">添加文章</a> </li>
                 </ul>
+              </li>
+              <li class="nav-item nav-item-has-subnav">
+                <a href="javascript:void(0)"><i class="mdi mdi-account"></i></i> <span>用户管理</span></a>
+                <ul class="nav nav-subnav">
+                  <li> <a class="multitabs" href="/headline">系统设置</a> </li>
+                  <li> <a class="multitabs" href="/alter">修改密码</a> </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+      </aside>
+      <!--头部信息-->
+      <header class="lyear-layout-header">
+        <nav class="navbar navbar-default">
+          <div class="topbar">
+            <div class="topbar-left">
+              <div class="lyear-aside-toggler">
+                <span class="lyear-toggler-bar"></span>
+                <span class="lyear-toggler-bar"></span>
+                <span class="lyear-toggler-bar"></span>
+              </div>
             </div>
-        </div>
-
-        <div class="layui-body">
-            <!-- 内容主体区域 -->
-            <div style="padding: 15px;">内容主体</div>
-        </div>
-
-        <div class="layui-footer">
-            <!-- 底部固定区域 -->
-            底部固定
-        </div>
+            <ul class="topbar-right">
+              <li class="dropdown dropdown-profile">
+                <a href="javascript:void(0)" data-toggle="dropdown">
+                  <img id="img" class="img-avatar img-avatar-48 m-r-10" src="" alt="" />
+                  <span id="username"><span class="caret"></span></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li> <a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
+                  <li class="divider"></li>
+                  <li> <a href="javascript:void(0)" id="showUserInfo"><i class="mdi mdi-account"></i> 个人信息</a> </li>
+                  <li> <a href="javascript:;" id="logout"> <i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+                </ul>
+              </li>
+              <!--切换主题配色-->
+              <li class="dropdown dropdown-skin">
+                <span data-toggle="dropdown" class="icon-palette"><i class="mdi mdi-palette"></i></span>
+                <ul class="dropdown-menu dropdown-menu-right" data-stopPropagation="true">
+                  <li class="drop-title">
+                    <p>LOGO</p>
+                  </li>
+                  <li class="drop-skin-li clearfix">
+                    <span class="inverse">
+                      <input type="radio" name="logo_bg" value="default" id="logo_bg_1" checked>
+                      <label for="logo_bg_1"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_2" id="logo_bg_2">
+                      <label for="logo_bg_2"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_3" id="logo_bg_3">
+                      <label for="logo_bg_3"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_4" id="logo_bg_4">
+                      <label for="logo_bg_4"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_5" id="logo_bg_5">
+                      <label for="logo_bg_5"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_6" id="logo_bg_6">
+                      <label for="logo_bg_6"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_7" id="logo_bg_7">
+                      <label for="logo_bg_7"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="logo_bg" value="color_8" id="logo_bg_8">
+                      <label for="logo_bg_8"></label>
+                    </span>
+                  </li>
+                  <li class="drop-title">
+                    <p>头部</p>
+                  </li>
+                  <li class="drop-skin-li clearfix">
+                    <span class="inverse">
+                      <input type="radio" name="header_bg" value="default" id="header_bg_1" checked>
+                      <label for="header_bg_1"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_2" id="header_bg_2">
+                      <label for="header_bg_2"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_3" id="header_bg_3">
+                      <label for="header_bg_3"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_4" id="header_bg_4">
+                      <label for="header_bg_4"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_5" id="header_bg_5">
+                      <label for="header_bg_5"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_6" id="header_bg_6">
+                      <label for="header_bg_6"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_7" id="header_bg_7">
+                      <label for="header_bg_7"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="header_bg" value="color_8" id="header_bg_8">
+                      <label for="header_bg_8"></label>
+                    </span>
+                  </li>
+                  <li class="drop-title">
+                    <p>侧边栏</p>
+                  </li>
+                  <li class="drop-skin-li clearfix">
+                    <span class="inverse">
+                      <input type="radio" name="sidebar_bg" value="default" id="sidebar_bg_1" checked>
+                      <label for="sidebar_bg_1"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_2" id="sidebar_bg_2">
+                      <label for="sidebar_bg_2"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_3" id="sidebar_bg_3">
+                      <label for="sidebar_bg_3"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_4" id="sidebar_bg_4">
+                      <label for="sidebar_bg_4"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_5" id="sidebar_bg_5">
+                      <label for="sidebar_bg_5"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_6" id="sidebar_bg_6">
+                      <label for="sidebar_bg_6"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_7" id="sidebar_bg_7">
+                      <label for="sidebar_bg_7"></label>
+                    </span>
+                    <span>
+                      <input type="radio" name="sidebar_bg" value="color_8" id="sidebar_bg_8">
+                      <label for="sidebar_bg_8"></label>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+              <!--切换主题配色-->
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!--End 头部信息-->
+      <!--页面主要内容-->
+      <main class="lyear-layout-content">
+        <div id="iframe-content"></div>
+      </main>
+      <!--End 页面主要内容-->
     </div>
-    <script src="/assets/layui/layui.js"></script>
-    <script>
-        //JS 
-        layui.use(['element', 'layer', 'util'], function () {
-            var element = layui.element
-                , layer = layui.layer
-                , util = layui.util
-                , $ = layui.$;
+  </div>
+  <script type="text/javascript" src="/assets/index/js/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+  <script type="text/javascript" src="/assets/index/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/assets/index/js/perfect-scrollbar.min.js"></script>
+  <script type="text/javascript" src="/assets/index/js/bootstrap-multitabs/multitabs.js"></script>
+  <script type="text/javascript" src="/assets/index/js/index.min.js"></script>
+  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+  <script src="/assets/layui/layui.js"></script>
+  
+  <script>
+    $(function () {
+      const { username, avatar, intro } = JSON.parse(Cookies.get('userInfo'))
+      $('#img').attr('src', avatar)
+      $("#username").html(username + `<span class="caret"></span>`)
+      $('#headline').text(localStorage.getItem('text'))
+      $("#logout").on('click', async (event) => {
+        const { message, code } = await $.post('/userLogout')
+        if (code === 0) {
+          location.href = '/register'
+        }
+      })
+      $("#showUserInfo").on('click', async (event) => {
+        const { user_id, username, date_time, email, avatar, intro } = JSON.parse(Cookies.get('userInfo'))
+        let userTemplate = `
+              <div class="container-fluid p-t-15">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="card">
+                          <div class="card-body">
+                              <div class="edit-avatar">
+                                  <img src="" class="img-avatar" style='width: 80px'id='demo1'>
+                                  <div class="avatar-divider"></div>
+                                  <div class="edit-avatar-content">
+                                      <button class="btn btn-default" id='test'>设置头像</button>
+                                  </div>
+                              </div>
+                              <hr>
+                              <form method="post" action="#!" class="site-form">
+                                  <div class="form-group">
+                                      <label for="username">用户名</label>
+                                      <input type="text" class="form-control" name="username" id="username" value='${username}' disabled="disabled" />
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="remark">个性签名</label>
+                                      <textarea class="form-control" name="intro" id="" rows="3">${intro}</textarea>
+                                  </div>
+                                  <button type="submit" class="btn btn-primary" id="saveUser">保存</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-            //头部事件
-            util.event('lay-header-event', {
-                //左侧菜单事件
-                menuLeft: function (othis) {
-                    layer.msg('展开左侧菜单的操作111', { icon: 0 });
-                }
-                , menuRight: function () {
-                    layer.open({
-                        type: 1
-                        , content: '<div style="padding: 15px;">处理右侧面板的操作234</div>'
-                        , area: ['260px', '100%']
-                        , offset: 'rt' //右上角
-                        , anim: 5
-                        , shadeClose: true
-                    });
-                }
-            });
+      `;
+        //页面层
 
+        layer.open({
+          title: "修改个人信息",
+          type: 1,
+          skin: 'layui-layer-rim', //加上边框
+          area: ['420px', '540px'], //宽高
+          content: userTemplate,
+          success: function (layero, index) {
+            console.log(layero[0])
+            let aa = layero[0]
+            console.log(aa);
+            let bb  = aa.querySelector('.edit-avatar-content>layui-upload-file');
+            $(bb).hide()
+            // aad
+
+            $('name[file]').hide();
+
+            console.log(aa.querySelector('.edit-avatar-content>layui-upload-file'));
+            // aad
+            // $(layero[0])
+            $('.edit-avatar-content>input').hide()
+            // 初始化上传
+            initUpload();
+            // 回显图片
+            let { avatar } = JSON.parse(Cookies.get('userInfo'));
+            $("#demo1").attr('src', avatar)
+          }
         });
-    </script>
+      })
+    })
+    // 上传文件
+    function initUpload() {
+      //常规使用 - 普通图片上传
+      const upload = layui.upload;
+      const element = layui.element;
+      var uploadInst = upload.render({
+        elem: '#test',
+        url: '/avatar'
+        ,
+        before: function (obj) {
+          //预读本地文件示例，不支持ie8
+          obj.preview(function (index, file, result) {
+            $('#demo1').attr('src', result); //图片链接（base64）
+          });
+          element.progress('demo', '0%'); //进度条复位
+          layer.msg('上传中', {
+            icon: 16,
+            time: 0
+          });
+        },
+        done: function (res) {
+          //如果上传失败
+          if (res.code === 0) {
+            let { avatar } = JSON.parse(Cookies.get('userInfo'));
+            // 回显图片
+            $('#img').attr('src', avatar)
+            return layer.msg('上传成功');
+          } else {
+            return layer.msg('上传失败');
+          }
+          //上传成功的一些操作
+          $('#demoText').html(''); //置空上传失败的状态
+        },
+        error: function () {
+          //演示失败状态，并实现重传
+          var demoText = $('#demoText');
+          demoText.html(
+            '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+          demoText.find('.demo-reload').on('click', function () {
+            uploadInst.upload();
+          });
+        },
+        // 进度条
+        progress: function (n, elem, e) {
+          element.progress('demo', n + '%'); // 可配合layui进度条元素使用
+          if (n == 100) {
+            layer.msg('上传完毕', { icon: 1 });
+          }
+        }
+      });
+    }
+    // 保存用户信息
+    $(document).on('click', "#saveUser", async () => {
+      const { user_id } = JSON.parse(Cookies.get('userInfo'))
+      const intro = $("textarea[name='intro']").val()
+      const { code, message } = await $.post('/updUserInfo', { user_id, intro })
+      if (code === 0) {
+        top.location.reload()
+        layer.msg(message, { icon: 1 })
+      } else {
+        layer.msg(message, { icon: 2 })
+      }
+    })
+  </script>
 </body>
 
 </html>

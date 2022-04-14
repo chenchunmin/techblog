@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/assets/index/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/index/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="/assets/index/css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <script src="/assets/layui/layui.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"
+        style="margin-top: 15px;margin-left: 20px;">添加</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">添加分类</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="layui-form">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">分类名称</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">分类备注</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+
+                    </form>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="closeadd" data-dismiss="modal">取消添加</button>
+                        <button type="submit" class="btn btn-primary" id="add">确定添加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <table class="layui-table" id="cate" lay-filter="cate">
+</body>
+<script type="text/javascript" src="/assets/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/index/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/index/js/main.min.js"></script>
+<script>
+    layui.use(['table', 'form'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        var form = layui.form;
+        table.render({
+            elem: '#cate'
+            , url: '/cateData'
+            , cols: [[
+                {
+                    field: 'cate_id', width: 100, title: '序号', templet: (d) => {
+                        return d.LAY_INDEX
+                    }
+                }
+                , { field: 'cate_name', edit: 'text', title: '分类名称' }
+                , { field: 'orderBy', edit: 'text', title: '分类备注', }
+                , {
+                    fixed: "right", width: 150, title: '操作', templet: (obj) => {
+                        return `
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                                `
+                    }
+                }
+            ]]
+        });
+        // 监听单元格编辑
+        table.on('edit(cate)', async function (obj) {
+            console.log(obj);
+            const { data } = obj;
+            const { code, message } = await $.post('/updCateData', data)
+            if (code === 0) {
+                layer.msg(message)
+            } else {
+                layer.msg(message)
+            }
+        });
+        // 删除
+        table.on('tool(cate)', function (obj) {
+            const datas = obj.data;
+            if (obj.event == 'del') {
+                layer.confirm('您确定删除此分类吗?', {
+                    btn: ['确定', '取消'] //可以无限个按钮
+                }, function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/delCateData',
+                        data: datas,
+                        success: function (data) {
+                            if (data.code === 2000) {
+                                layer.msg(data.msg)
+                                table.reload('cate', {
+                                    url: '/cateData'
+                                    , where: {}
+                                });
+                            }
+                        }
+                    })
+                });
+            }
+        })
+        $('#add').click(function () {
+            let name = $('#recipient-name').val();
+            let text = $('#message-text').val();
+            $.ajax({
+                type: 'POST',
+                data: { name, text },
+                url: '/addcate',
+                success: (res) => {
+                    if (res.errcode === 20000) {
+                        layer.msg(res.message)
+                        $('#closeadd').click();
+                        table.reload('cate', {
+                            url: '/cateData'
+                            , where: {}
+                        });
+                    }
+                }
+            })
+            return false;
+        })
+    });
+</script>
+
+</html>

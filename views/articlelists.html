@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+</head>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<body>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+</body>
+<script src="/assets/layui/layui.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script>
+    // 弹窗显示内容
+    function showContent(data) {
+        let { title, content, username, add_date } = data;
+        content = `<div style="padding:15px">
+        <h2>${title}</h2>
+        <div>${add_date} ${username}</div>
+        ${content}
+      </div>`
+        // 页面层
+        layer.open({
+            title,
+            content,
+            type: 1,
+            skin: 'layui-layer-rim',
+            area: ['520px', '540px'],
+        });
+    }
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/artData'
+            , cols: [[
+                { field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true }
+                , { field: 'title', title: '文章标题' }
+                , {
+                    field: 'pic', title: '封面图', templet: ({ pic }) => {
+                        return `<img src='${pic}' style="width:100px;"/>`
+                    }
+                }
+                , {
+                    field: '', title: '内容', templet: (data) => {
+                        let mydata = JSON.stringify(data)
+                        console.log('mydata', mydata)
+                        return `<a href="javascript:;" onclick='showContent(${mydata})'>预览内容</a>`
+                    }
+                }
+                , { field: 'username', title: '发布者' }
+                , { field: 'statusText', title: '状态', }
+                , { field: 'add_date', title: '添加时间' }
+                , { field: 'cate_name', title: '所属分类', }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo', }
+            ]],
+            page: {
+                limit: 10,
+                prev: '上一页',
+                next: '下一页'
+            }
+        });
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+                //自定义头工具栏右侧图标
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            };
+        });
+        // 监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', async function (index) {
+                    const { id } = data;
+                    const { code, message } = await $.post('/delArtData', { id })
+                    if (code === 0) {
+                        // 重载当前表格
+                        table.reload('test')
+                    }
+                    layer.msg(message)
+                });
+            } else if (obj.event === 'edit') {
+                console.log('edit', data)
+            }
+        });
+    });
+</script>
+
+</html>
