@@ -12,6 +12,9 @@ const rename = promisify(fs.rename);
 Controller.index = (req, res) => {
     res.sendFile(`${viewsDir}/index.html`)
 }
+Controller.editArt = (req, res) => {
+    res.sendFile(`${viewsDir}/editArticle.html`)
+}
 Controller.addarticle = (req, res) => {
     res.sendFile(`${viewsDir}/addarticle.html`)
 }
@@ -158,20 +161,9 @@ Controller.articlelists = (req, res) => {
 Controller.headline = (req, res) => {
     res.sendFile(`${viewsDir}/headline.html`)
 }
-Controller.ensure = async (req, res) => {
-    console.log(req.body);
-    let { title } = req.body;
-    const sql = `insert into headline (title) values ('${title}')`;
-    await query(sql).then(data => {
-        return res.json({
-            errcode: 10000,
-            message: '标题设置成功',
-        })
-    })
-}
 Controller.cateData = async (req, res) => {
     // sql查询数据
-    const sql = 'select * from category where isdel = 0 ';
+    const sql = 'select * from category';
     const data = await query(sql)
     // 返回json数据给前端
     const responseData = {
@@ -237,19 +229,27 @@ Controller.alter = async (req, res) => {
 Controller.artData = async (req, res) => {
     const {
         page,
-        limit
+        limit,
+        keyword
     } = req.query;
-    const sql1 = 'select count(id) as count from article'
+    let sql1 = `select count(id) as count from article where 1 `;
+    if (keyword) {
+        sql1 += ` and title like '%${keyword}%' `;
+    }
     const result = await query(sql1)
     const {
         count
     } = result[0]
     // 根据page和limit获取指定页码的数据
     const offset = (page - 1) * limit;
-    const sql2 = `select t1.*,t2.cate_name,t3.username from article t1 
+    let sql2 = `select t1.*,t2.cate_name,t3.username from article t1 
         left join category t2 on t1.cate_id = t2.cate_id 
-        left join users t3 on t1.author = t3.user_id
-        limit ${offset},${limit}`
+        left join users t3 on t1.author = t3.user_id where 1 `
+    if (keyword) {
+        sql2 += ` and t1.title like '%${keyword}%'`
+    }
+    sql2 += `order by t1.cate_id desc 
+    limit ${offset},${limit}`
     let data = await query(sql2)
     data = data.map((item) => {
         const {
@@ -354,12 +354,93 @@ Controller.avatar = async (req, res) => {
         })
         res.json({
             code: 0,
-            message: "upload success"
+            message: "用户信息上传成功"
         })
     } else {
         res.json({
             code: -6,
-            message: "upload fail",
+            message: "用户信息上传失败",
+        })
+    }
+}
+Controller.deploy = async (req, res) => {
+    const sql = `select * from headline`
+    const result = await query(sql)
+    return res.json(result)
+}
+Controller.upload = async (req, res) => {
+    let { web_site_title, oldSrc } = req.body
+    let newsSrc = oldSrc
+    let sql = '';
+    if (req.file) {
+        let files = req.file
+        let oldName = files.filename
+        let newName = files.originalname
+        let str = newName.indexOf('.')
+        let sub = newName.substring(str, newName.length)
+        let newUrl = oldName + sub
+        let oldSrc = path.join(path.dirname(__dirname), 'uploads', oldName) // 当前目录的绝对路径并查到上传的二进制文件名称
+        let newSrc = path.join(path.dirname(__dirname), 'uploads', newUrl) // 拿到最终要上传的路径和文件的源名称
+        let oldFile = '/uploads/' + newUrl
+        fs.renameSync(oldSrc, newSrc)
+        fs.unlinkSync(path.join(path.dirname(__dirname), newsSrc))
+        sql = `update headline set title='${web_site_title}',logo='${oldFile}' where id = 1`
+    } else {
+        sql = `update headline set title= '${web_site_title}' where id = 1`
+    }
+    let result = await query(sql)
+    if (result.affectedRows) {
+        return res.json({
+            code: 200,
+            message: '更新成功'
+        })
+    } else {
+        return res.json({
+            code: 404,
+            message: '更新失败'
+        })
+    }
+}
+Controller.fetchOneArt = async (req, res) => {
+    let { id } = req.query
+    const sql = `select * from article where id = ${id}`
+    const result = await query(sql)
+    res.json(result[0])
+}
+Controller.updArtData = async (req, res) => {
+    let { id, title, content, cate_id, isUpdPic, status, oldPic } = req.body;
+    let pic = '';
+    let sql;
+    if (isUpdPic == 1) {
+        // 上传文件
+        let { originalname, filename } = req.file;
+        let extName = originalname.substring(originalname.lastIndexOf('.'))
+        let uploadDir = './uploads'
+        let oldName = path.join(uploadDir, filename);
+        let newName = path.join(uploadDir, filename) + extName;
+        try {
+            await rename(oldName, newName)
+            pic = `uploads/${filename}${extName}`
+            let oldPicFullPath = path.join(path.dirname(__dirname), oldPic)
+            fs.unlink(oldPicFullPath, (err) => { })
+        } catch (err) {
+            console.log('上传失败')
+        }
+        sql = `update article set title='${title}',content='${content}',cate_id='${cate_id}',status='${status}', pic='${pic}' where id = ${id} `;
+
+    } else {
+        sql = `update article set title='${title}',content='${content}',cate_id='${cate_id}',status='${status}'  where id = ${id} `;
+    }
+    const { affectedRows } = await query(sql)
+    if (affectedRows > 0) {
+        res.json({
+            code: 0,
+            message: "更新成功"
+        })
+    } else {
+        res.json({
+            code: -9,
+            message: "更新失败"
         })
     }
 }

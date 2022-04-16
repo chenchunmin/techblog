@@ -7,16 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/css/lightbox.min.css">
 </head>
-<table class="layui-hide" id="test" lay-filter="test"></table>
 
 <body>
+    <!-- 搜索 -->
+    <div class="search" style="display:flex; margin-top: 20px;">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="text" id="keyword" autocomplete="off" placeholder="请输入关键字" class="layui-input">
+            </div>
+        </div>
+        <button class="layui-btn layui-btn-warn" id="search">立即搜索</button>
+    </div>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+    </script>
 </body>
 <script src="/assets/layui/layui.js"></script>
+<script src="/assets/js/lightbox-plus-jquery.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
 <script>
     // 弹窗显示内容
@@ -46,7 +58,8 @@
                 , { field: 'title', title: '文章标题' }
                 , {
                     field: 'pic', title: '封面图', templet: ({ pic }) => {
-                        return `<img src='${pic}' style="width:100px;"/>`
+                        return `<a class="example-image-link" href="${pic}" data-lightbox="example-set" data-title="Click the right half of the image to move forward.">
+                        <img class="example-image" src="${pic}" alt=""/></a>`
                     }
                 }
                 , {
@@ -103,9 +116,17 @@
                     layer.msg(message)
                 });
             } else if (obj.event === 'edit') {
-                console.log('edit', data)
+                location.href = '/editArt?id=' + data.id
             }
         });
+        // 搜索
+        $('#search').on('click', () => {
+            let keyword = $("#keyword").val()
+            // 发送ajax请求
+            table.reload('test', {
+                where: { keyword } // 设定异步数据接口的额外参数
+            })
+        })
     });
 </script>
 

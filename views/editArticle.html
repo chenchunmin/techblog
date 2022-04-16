@@ -12,6 +12,7 @@
 <body>
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
+        <h1 style="margin: 10px 60px;">文章编辑</h1>
         <form class="layui-form" id="artForm" lay-filter="example">
             <div class="layui-form-item">
                 <label class="layui-form-label">标题</label>
@@ -43,7 +44,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">审核</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="status" value="0" title="待审核" checked="">
+                    <input type="radio" name="status" value="0" title="待审核">
                     <input type="radio" name="status" value="1" title="审核通过">
                 </div>
             </div>
@@ -53,7 +54,6 @@
                     <div id="content"></div>
                 </div>
             </div>
-
             <div class="layui-form-item">
                 <div class="layui-input-block">
                     <button type="button" class="layui-btn" id="submitForm">立即提交</button>
@@ -62,33 +62,39 @@
         </form>
     </div>
 </body>
-<script src="/assets/layui/layui.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script src="/assets/layui/layui.js"></script>
 <script>
+    const reg = /\?id=(\d+)/
+    const [, id] = location.search.match(reg)
+    let isUpdPic = 0; // 0不更新 1更新
     let editor;
+    let oldPic;
     function initEditor() {
-        // 初始化富文本编辑器
         const E = window.wangEditor
         editor = new E('#content')
-        // 或者 const editor = new E( document.getElementById('div1') )
+        // base64
+        editor.config.uploadImgShowBase64 = true
+        editor.config.uploadImgMaxSize = 0.5 * 1024 * 1024
         editor.create()
     }
     // 初始化富文本编辑器
     initEditor();
-    // 上传文件
+    // 上传文件并预览
     function uploadFile(fileEle) {
         const file = fileEle.files[0];
-        // 预览图片
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file)
         fileReader.onload = function () {
             const base64 = this.result
             console.log(base64)
             $("#preview").attr('src', base64)
+            isUpdPic = 1
         }
     }
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate'], async function () {
         const form = layui.form;
         // 默认加载所有的分类
         async function initCateData() {
@@ -99,35 +105,50 @@
                 const { cate_id, cate_name } = item;
                 optionsHtml += `<option value="${cate_id}">${cate_name}</option>`
             });
-            // 赋值给下拉框
             $("#cate_id").html(optionsHtml)
-            form.render('select');//需要渲染一下
+            form.render('select');  // 渲染
         }
         initCateData();
         // 上传文件
         $("#upload").on('click', () => {
             $("#pic")[0].click();
         })
+
+        // 根据id获取文章数据，进行回显
+        let result = await $.get('/fetchOneArt', { id })
+        let { status, title, content, author, pic, cate_id } = result
+        oldPic = pic
+        status = status == 1 ? true : false
+        // 回显表单数据
+        form.val("example", {
+            title,
+            status,
+            cate_id
+        });
+        $("#preview").attr('src', pic)
+        editor.txt.html(result.content)
+
     })
     // 提交表单数据
     $("#submitForm").on('click', async () => {
-        // 1. 获取数据（文本和二进制、富文本数据）
+        // 获取数据
         const formData = new FormData($("#artForm")[0])
         // 获取富文本内容
         const content = editor.txt.html()
-        formData.append('content', content)
-        // 2.发送请求
+        formData.set('content', content)
+        formData.set('id', id)
+        formData.set('isUpdPic', isUpdPic)
+        formData.set('oldPic', oldPic)
         const { code, message } = await $.ajax({
-            url: "/addArtData",
+            url: "/updArtData",
             type: 'post',
             data: formData,
             contentType: false,
             processData: false
         })
-        // 提示
         layer.msg(message)
         if (code === 0) {
-            top.location.reload()
+            location.href = '/articlelists'
         }
     })
 </script>

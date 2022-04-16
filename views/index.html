@@ -11,8 +11,13 @@
   <meta name="author" content="yinqi">
   <link href="/assets/index/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/index/css/materialdesignicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/index/js/bootstrap-multitabs/multitabs.min.css">
+  <link rel="stylesheet" href="/assets/index/js/bootstrap-multitabs/multitabs.min.css"> *
   <link href="/assets/index/css/style.min.css" rel="stylesheet">
+  <style>
+    .edit-avatar-content input[type="file"] {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -22,8 +27,8 @@
       <aside class="lyear-layout-sidebar">
         <!-- logo -->
         <div id="logo" class="sidebar-header">
-          <a href=""><img src="assets/index/images/users/avatar.jpg"
-              style="border-radius: 50%;width: 48px; height: 48px;" title="LightYear" alt="LightYear" />
+          <a href=""><img src="" id="imgs" style="border-radius: 50%;width: 48px; height: 48px;" title="LightYear"
+              alt="" />
             <span id="headline"></span>
           </a>
         </div>
@@ -212,13 +217,11 @@
   <script type="text/javascript" src="/assets/index/js/index.min.js"></script>
   <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
   <script src="/assets/layui/layui.js"></script>
-  
   <script>
     $(function () {
       const { username, avatar, intro } = JSON.parse(Cookies.get('userInfo'))
       $('#img').attr('src', avatar)
       $("#username").html(username + `<span class="caret"></span>`)
-      $('#headline').text(localStorage.getItem('text'))
       $("#logout").on('click', async (event) => {
         const { message, code } = await $.post('/userLogout')
         if (code === 0) {
@@ -257,10 +260,8 @@
                   </div>
               </div>
           </div>
-
       `;
         //页面层
-
         layer.open({
           title: "修改个人信息",
           type: 1,
@@ -268,19 +269,6 @@
           area: ['420px', '540px'], //宽高
           content: userTemplate,
           success: function (layero, index) {
-            console.log(layero[0])
-            let aa = layero[0]
-            console.log(aa);
-            let bb  = aa.querySelector('.edit-avatar-content>layui-upload-file');
-            $(bb).hide()
-            // aad
-
-            $('name[file]').hide();
-
-            console.log(aa.querySelector('.edit-avatar-content>layui-upload-file'));
-            // aad
-            // $(layero[0])
-            $('.edit-avatar-content>input').hide()
             // 初始化上传
             initUpload();
             // 回显图片

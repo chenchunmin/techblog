@@ -21,8 +21,6 @@ router.post('/delCateData', Controller.delCateData);
 router.post('/addcate', Controller.addcate);
 // 标题页面
 router.get('/headline', Controller.headline);
-// 标题
-router.post('/ensure', Controller.ensure);
 // 注册页面
 router.get('/register', Controller.register);
 // 用户注册
@@ -49,4 +47,14 @@ router.post('/delArtData', Controller.delArtData);
 router.post('/updUserInfo', Controller.updUserInfo)
 // 更新用户头像
 router.post('/avatar', upload.single('file'), Controller.avatar)
+// LOGO图
+router.post('/upload', upload.single('filesd'), Controller.upload)
+// 编辑文章页面
+router.get('/editArt', Controller.editArt)
+// 获取单条数据的接口
+router.get('/fetchOneArt', Controller.fetchOneArt)
+// 编辑文章接口
+router.post('/updArtData', upload.single('pic'), Controller.updArtData)
+// 获取配置
+router.get('/deploy',Controller.deploy)
 module.exports = router;
